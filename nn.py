@@ -83,6 +83,9 @@ class nnet(Model):
 
     def __init__(self, input_shape, model_type='classification'):
         Model.__init__(self, model_type)
+        if isinstance(input_shape, int):
+            input_shape = (input_shape,)
+
         if len(input_shape) == 1:
             self.X = T.matrix()
         elif len(input_shape) == 2:
@@ -93,6 +96,7 @@ class nnet(Model):
             raise ValueError("Unrecognized input shape")
 
         self.out = self.X
+
         self.out_shape = list(input_shape)
 
 

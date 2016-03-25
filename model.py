@@ -11,6 +11,9 @@ from theano.compile.debugmode import DebugMode
 
 class Model:
     def __init__(self, model_type='classification'):
+        if not model_type in ('classification', 'regression'):
+            raise ValueError("Incorrect classification type. Should be either 'classification' or 'regression'.")
+
         self.params = []
         self.X = T.matrix(dtype='float32')
         self.y = T.vector(dtype='float32')
@@ -66,11 +69,8 @@ class Model:
             srng = RandomStreams(seed=234)
             perm = srng.permutation(n = N)
 
-            no_default_upd.append(perm.rng)
-            manual_updates.append(function([], [], updates=srng.updates()))
-
-            X_train = X_train[perm]
-            y_train = y_train[perm]
+            manual_updates.append(function([], updates=[(X_train, X_train[perm]),
+                                                        (y_train, y_train[perm])]))
 
         cost = cost_function(self.y, self.out, self.params)
         error = self.error()

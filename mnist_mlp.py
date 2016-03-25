@@ -1,5 +1,5 @@
 from theano import function
-from nn import MLP, nnet
+from nn import nnet
 from optimization import adadelta, CE
 from theano.tensor.nnet import relu, softmax, sigmoid, hard_sigmoid, conv
 from keras.datasets import mnist
