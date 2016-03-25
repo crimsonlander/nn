@@ -17,6 +17,7 @@ y_train = y_train.flatten()
 
 y_test = y_test.flatten()
 
+#
 model = nnet((1, 28, 28))
 
 model.addConvolutionLayer((20, 3, 3))
