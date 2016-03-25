@@ -68,7 +68,7 @@ def CE(decay=0.01):
         weight_penalty = 0
         for param in params:
             weight_penalty += T.sum(param**2)
-        return -T.mean(T.log(out[T.arange(y.shape[0]), y.astype('int64')])) + decay*weight_penalty
+        return -T.mean(T.log(out[T.arange(y.shape[0]), y.astype('int32')])) + decay*weight_penalty
     return cost
 
 

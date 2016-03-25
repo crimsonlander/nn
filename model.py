@@ -15,11 +15,16 @@ class Model:
             raise ValueError("Incorrect classification type. Should be either 'classification' or 'regression'.")
 
         self.params = []
-        self.X = T.matrix(dtype='float32')
-        self.y = T.vector(dtype='float32')
+        self.X = T.matrix(dtype='float32', name='X')
+
         self.out = T.matrix(dtype='float32')
 
         self.classification = (model_type == 'classification')
+
+        if self.classification:
+            self.y = T.vector(dtype='int32', name='y')
+        else:
+            self.y = T.matrix(dtype='float32')
 
     def prediction(self):
         if self.classification:
@@ -42,7 +47,6 @@ class Model:
           n_epochs, batch_size,
           optimization_function,
           cost_function,
-          make_shared=True,
           random_order=True):
 
         N = X_train.shape[0]
@@ -51,19 +55,21 @@ class Model:
         no_default_upd = []
         manual_updates = []
 
-        X_train = X_train.astype('float32')
-        y_train = y_train.astype('float32')
-        X_valid = X_valid.astype('float32')
-        y_valid = y_valid.astype('float32')
-
         if not isinstance(X_train, (TensorVariable, SharedVariable)):
-            X_train = shared(X_train, name="X_train")
+            X_train = shared(X_train.astype('float32'), name="X_train")
         if not isinstance(y_train, (TensorVariable, SharedVariable)):
-            y_train = shared(y_train, name="y_train")
-        if not isinstance(y_train, (TensorVariable, SharedVariable)):
-            X_valid = shared(X_valid, name="X_valid")
-        if not isinstance(y_train, (TensorVariable, SharedVariable)):
-            y_valid = shared(y_valid, name="X_valid")
+            if self.classification:
+                y_train = shared(y_train.astype('int32'), name="y_train")
+            else:
+                y_train = shared(y_train.astype('float32'), name="y_train")
+
+        if not isinstance(X_valid, (TensorVariable, SharedVariable)):
+            X_valid = shared(X_valid.astype('float32'), name="X_valid")
+        if not isinstance(y_valid, (TensorVariable, SharedVariable)):
+            if self.classification:
+                y_valid = shared(y_valid.astype('int32'), name="y_valid")
+            else:
+                y_valid = shared(y_valid.astype('float32'), name="y_valid")
 
         if random_order:
             srng = RandomStreams(seed=234)
@@ -75,6 +81,7 @@ class Model:
         cost = cost_function(self.y, self.out, self.params)
         error = self.error()
 
+        print (X_valid.dtype, y_valid.dtype)
         validate = function([], [cost, error],
                             givens=[(self.X, X_valid), (self.y, y_valid)])
 

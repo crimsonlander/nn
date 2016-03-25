@@ -87,11 +87,11 @@ class nnet(Model):
             input_shape = (input_shape,)
 
         if len(input_shape) == 1:
-            self.X = T.matrix()
+            self.X = T.matrix('X')
         elif len(input_shape) == 2:
-            self.X = T.tensor3()
+            self.X = T.tensor3('X')
         elif len(input_shape) == 3:
-            self.X = T.tensor4()
+            self.X = T.tensor4('X')
         else:
             raise ValueError("Unrecognized input shape")
 
