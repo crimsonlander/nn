@@ -1,6 +1,6 @@
 from theano import function
 from nn import nnet
-from optimization import adadelta, CE
+from optimization import adadelta, CE, sgd
 from theano.tensor.nnet import relu, softmax, sigmoid, hard_sigmoid, conv
 from keras.datasets import mnist
 
@@ -37,5 +37,5 @@ model.addFullyConnectedLayer(100)
 
 model.addActivation(softmax)
 
-model.train(X_train, y_train, X_test, y_test, 5, 100, adadelta(1e-1), CE(0.005))
-model.train(X_train, y_train, X_test, y_test, 5, 100, adadelta(1e-2), CE(0.005))
+model.train(X_train, y_train, X_test, y_test, 10, 100, sgd(1e-2), CE(0.005))
+model.train(X_train, y_train, X_test, y_test, 10, 100, sgd(1e-3), CE(0.005))
