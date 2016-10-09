@@ -81,7 +81,6 @@ class Model:
         cost = cost_function(self.y, self.out, self.params)
         error = self.error()
 
-        print (X_valid.dtype, y_valid.dtype)
         validate = function([], [cost, error],
                             givens=[(self.X, X_valid), (self.y, y_valid)])
 
